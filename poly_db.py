@@ -15,9 +15,8 @@ TABLE_NAME = "polygons"
 class Polygon(object):
     """Represents a polygon holding (pkey, name, sides and sides_english)"""
     # don't have to worry about the
-    def __init__(self, pkey=0, name='', sides='', sides_english=''):
+    def __init__(self, name='', sides='', sides_english=''):
         #think sqlite will take care of the key field automatically
-        self.pkey = pkey
         self.name = name
         self.sides = sides
         self.sides_english = sides_english
@@ -25,7 +24,9 @@ class Polygon(object):
 
     @classmethod
     def from_row(cls, row):
-        return Polygon(*row)
+        print 'a row looks like:'
+        print row[1]
+        return Polygon(row[1], row[2], row[3])
 
 
 
@@ -133,11 +134,11 @@ class PolygonDB(object):
 def main():
     db = PolygonDB()
     db.create_table()
-    polyer = Polygon(None, "Pentagon", 5, "five")
+    polyer = Polygon("Pentagon", 5, "five")
     with db.transaction():
         db.insert(polyer)
 
-    poly2 = Polygon(None, "hexagon", 6, "sixish")
+    poly2 = Polygon("hexagon", 6, "sixish")
     with db.transaction():
         db.insert(poly2)
 
@@ -145,7 +146,7 @@ def main():
 
 def updateHexagon():
     db = PolygonDB()
-    newsq = Polygon( None, "hexagon", 6, "six")
+    newsq = Polygon( "hexagon", 6, "six")
     with db.transaction():
         db.update(newsq)
 
@@ -154,6 +155,7 @@ def lookupHexagon():
     db = PolygonDB()
     with db.transaction():
         looktri = db.lookup("hexagon")
+        print 'after lookup the name is:'
         print looktri.name
 
 
